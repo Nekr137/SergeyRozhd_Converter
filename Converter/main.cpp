@@ -1,15 +1,19 @@
 #include <iostream>
 #include <vector>
 
+#include "FileConverter.h"
 
 int main(int argc, const char* argv[]) {
 	if (argc < 2) {
-		std::cout << "[ Error ] Please specify at least one file to convert" << std::endl;
+		std::cout << "Run:\n Converter.exe filename1 filename2 filename3 ... " << std::endl;
 		return 0;
 	}
 
-	std::vector<std::string> aFilenames(argc - 1);
 	for (int i = 1; i < argc; ++i) {
-		aFilenames[i] = argv[i];
+		std::string fname = argv[i];
+		FileConverter converter(fname);
+		bool suc = converter.Run({ "HH", "MM" });
+		std::cout << (!suc ? "[ Error ] Failed to convert the " : "[ Ok ] Converted the ") << fname << " file." << std::endl;
 	}
 }
+
