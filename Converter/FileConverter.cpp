@@ -1,23 +1,23 @@
 #include <iostream>
 #include <fstream>
+#include <regex>
 
 #include "FileConverter.h"
 
 
-static std::vector<std::string> splitString(const std::string& iStr, const std::string& iDelim)
+static std::vector<std::string> splitString(const std::string& iStr)
 {
-	std::vector<std::string> aSub;
-	size_t start = 0;
-	size_t end = iStr.find(iDelim);
-	while (end != std::string::npos) {
-		aSub.push_back(std::move(iStr.substr(start, end - start)));
-		start = end + iDelim.length();
-		end = iStr.find(iDelim, start);
+	std::regex r{ "[\\w\\d\\.\\,]+"};
+	std::vector<std::string> aStr{
+		std::sregex_token_iterator{iStr.begin(), iStr.end(), r, 0}, // Mark `0` here i.e. whole regex match
+		std::sregex_token_iterator{}
+	};
+	for (std::string& s : aStr) {
+		std::string replStr;
+		std::regex_replace(std::back_inserter(replStr), s.begin(), s.end(), std::regex({ "\\," }), ".");
+		s = std::move(replStr);
 	}
-	std::string sub = iStr.substr(start, end - start);
-	if (!sub.empty())
-		aSub.push_back(std::move(sub));
-	return aSub;
+	return aStr;
 }
 
 FileConverterPtr FileConverter::Create(std::string iFilename)
@@ -51,7 +51,7 @@ bool FileConverter::Parse()
 
 	// Parsing the header
 	getline(inp, line);
-	std::vector<std::string> aHeaders = splitString(line, /* delimiter */ "\t");
+	std::vector<std::string> aHeaders = splitString(line);
 	_aRows.reserve(aHeaders.size());
 	for (std::string& header : aHeaders)
 		_aRows.emplace_back(std::move(header));
@@ -64,7 +64,7 @@ bool FileConverter::Parse()
 			break;
 
 		std::vector<std::string> aData;
-		aData = splitString(line, /* delimiter */ "\t");
+		aData = splitString(line);
 
 		isHeaderPassed |= !aData.empty();
 		if (!isHeaderPassed)
