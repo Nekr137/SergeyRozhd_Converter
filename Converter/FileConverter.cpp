@@ -76,7 +76,7 @@ bool FileConverter::Parse()
 		}
 		for (size_t i = 0; i < _aRows.size(); ++i) {
 			_aRows[i]._aRow.push_back(aData[i]);
-		}
+		}	
 	}
 	return true;
 }
@@ -125,3 +125,7 @@ bool FileConverter::Write(const std::vector<std::string>& iaOrder) const
 	return true;
 }
 
+void FileConverter::AppendTextToFname(std::string str)
+{
+	_fnameWithoutExt += std::move(str);
+}

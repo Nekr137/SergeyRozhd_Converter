@@ -4,14 +4,10 @@
 #include <vector>
 #include <memory>
 
+#include "Row.h"
+
 class FileConverter;
 typedef std::shared_ptr<FileConverter> FileConverterPtr;
-
-struct Row {
-	Row(std::string iHeader) : _header(std::move(iHeader)) {}
-	std::string _header;
-	std::vector<std::string> _aRow;
-};
 
 
 class FileConverter
@@ -22,6 +18,11 @@ public:
 	bool Write(const std::vector<std::string>& iaOrder) const;
 
 	std::string GetFileName() const { return _fname; }
+
+	Rows& GetRows() { return _aRows; }
+	const Rows& GetRows() const { return _aRows; }
+
+	void AppendTextToFname(std::string str);
 
 private:
 	FileConverter(std::string iFilename);

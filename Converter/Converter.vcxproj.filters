@@ -22,5 +22,8 @@
     <ClInclude Include="FileConverter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Row.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
